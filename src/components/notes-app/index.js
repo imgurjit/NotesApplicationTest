@@ -3,55 +3,79 @@ import "./index.css";
 
 function NotesApp() {
   const [allNotes, setAllNotes] = useState([
-    { noteTitle: "sdfjksdh", noteStatus: "sdkjfhk" },
-    { noteTitle: "sdfjksdh", noteStatus: "sdkjfhk" }
+    { noteTitle: "This is a completed note", noteStatus: "Completed" },
+    { noteTitle: "This is a active note", noteStatus: "Active" }
   ]);
   const [message, setMessage] = useState("All");
+  const [currentNoteTitle, setCurrentNoteTitle] = useState("");
+  const [currentNoteStatus, setCurrentNoteStatus] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   let getCurrrentNotes = () => {
-    console.log("Messagh", message);
-    let x = [];
-
-    allNotes.forEach((n) => {
-      console.log(n.noteTitle);
-      if (message === "All")
-        x = (
-          <tr>
+    let z = [];
+    if (message === "All") {
+      z = allNotes.map((n, i) => {
+        return (
+          <tr key={i}>
             <td>{n.noteTitle}</td>
             <td>{n.noteStatus}</td>
           </tr>
         );
-      else if (message === "Completed") {
-        if (n.noteStatus === "Completed") {
-          x = (
+      });
+    } else {
+      z = allNotes
+        .filter((n) => {
+          return n.noteStatus === message;
+        })
+        .map((n) => {
+          return (
             <tr>
               <td>{n.noteTitle}</td>
               <td>{n.noteStatus}</td>
             </tr>
           );
-        }
-      } else if (message === "Active") {
-        if (n.noteStatus === "Active") {
-          x = (
-            <tr>
-              <td>{n.noteTitle}</td>
-              <td>{n.noteStatus}</td>
-            </tr>
-          );
-        }
-      }
-    });
+        });
+    }
+    return z;
+  };
 
-    console.log("dsflkjf", x);
-    return x;
+  let addNote = () => {
+    if (currentNoteStatus === "Completed" || currentNoteStatus === "Active") {
+      setAllNotes(allNotes.concat({ noteTitle: currentNoteTitle, noteStatus: currentNoteStatus }));
+    } else {
+      alert("Please valid information");
+    }
   };
 
   return (
     <div className="layout-column align-items-center justify-content-start">
       <section className="layout-row align-items-center justify-content-center mt-30">
-        <input data-testid="input-note-name" type="text" className="large mx-8" placeholder="Note Title" />
-        <input data-testid="input-note-status" type="text" className="large mx-8" placeholder="Note Status" />
-        <button className="" data-testid="submit-button">
+        <input
+          data-testid="input-note-name"
+          type="text"
+          className="large mx-8"
+          placeholder="Note Title"
+          value={currentNoteTitle}
+          onChange={(e) => {
+            setCurrentNoteTitle(e.target.value);
+          }}
+        />
+        <input
+          data-testid="input-note-status"
+          type="text"
+          className="large mx-8"
+          value={currentNoteStatus}
+          placeholder="Note Status"
+          onChange={(e) => {
+            setCurrentNoteStatus(e.target.value);
+          }}
+        />
+        <button
+          className=""
+          data-testid="submit-button"
+          onClick={() => {
+            addNote();
+          }}>
           Add Note
         </button>
       </section>
@@ -59,17 +83,30 @@ function NotesApp() {
       <div className="mt-50">
         <ul className="tabs">
           <li
-            className="tab-item slide-up-fade-in"
+            className={currentIndex === 0 ? "tab-item slide-up-fade-in activeTab" : "tab-item slide-up-fade-in "}
             data-testid="allButton"
             onClick={() => {
-              console.log("sdfkljh");
+              setMessage("All");
+              setCurrentIndex(0);
             }}>
             All
           </li>
-          <li className="tab-item slide-up-fade-in" data-testid="activeButton" onClick={() => {}}>
+          <li
+            className={currentIndex === 1 ? "tab-item slide-up-fade-in activeTab" : "tab-item slide-up-fade-in "}
+            data-testid="activeButton"
+            onClick={() => {
+              setMessage("Active");
+              setCurrentIndex(1);
+            }}>
             Active
           </li>
-          <li className="tab-item slide-up-fade-in" data-testid="completedButton" onClick={() => {}}>
+          <li
+            className={currentIndex === 2 ? "tab-item slide-up-fade-in activeTab" : "tab-item slide-up-fade-in "}
+            data-testid="completedButton"
+            onClick={() => {
+              setMessage("Completed");
+              setCurrentIndex(2);
+            }}>
             Completed
           </li>
         </ul>
