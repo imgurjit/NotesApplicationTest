@@ -42,6 +42,8 @@ function NotesApp() {
   let addNote = () => {
     if (currentNoteStatus === "Completed" || currentNoteStatus === "Active") {
       setAllNotes(allNotes.concat({ noteTitle: currentNoteTitle, noteStatus: currentNoteStatus }));
+      setCurrentNoteStatus("");
+      setCurrentNoteTitle("");
     } else {
       alert("Please valid information");
     }
